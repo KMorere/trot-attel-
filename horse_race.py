@@ -51,16 +51,28 @@ def is_valid_input():
 
 
 def display_results():
+    """ Used to display the race turn by turn. """
     _sorted_horses = sorted(horses, key=lambda x: x["score"], reverse=True)
-    print(
-        f"Number {_sorted_horses[0]["number"]} is the current head of the race at {_sorted_horses[0]["score"]} meters !")
-    print(f"Number {_sorted_horses[1]["number"]} is second at {_sorted_horses[1]["score"]} meters.")
-    print(f"Number {_sorted_horses[2]["number"]} is third at {_sorted_horses[2]["score"]} meters.")
+    highest = _sorted_horses[0]["score"]
+
+    for i in range(0, HORSE_AMOUNT):
+        print("[{:>2}] ".format(horses[i]["number"]), end='')
+
+        for n in range(highest):
+            if n <= horses[i]["score"]:
+                if horses[i]["score"] >= RACE_LENGTH:
+                    print("\x1b[32m█\x1b[0m", end='') # Green.
+                else:
+                    print("\x1b[39m█\x1b[0m", end='') # Default.
+            else:
+                print(" ", end='')
+
+        print(" [{0}/{1}]".format(horses[i]["score"], RACE_LENGTH))
 
 
 HORSE_AMOUNT = 12
-RACE_LENGTH = 2400
-TURN_LENGTH = 23
+RACE_LENGTH = 240
+TURN_LENGTH = 2
 RACE_TYPE = {"three":3, "four":4, "five":5}
 
 horses = [{"number":x+1, "speed":0, "score":0, "dq":False} for x in range(HORSE_AMOUNT)]
@@ -99,4 +111,7 @@ if __name__ == "__main__":
     if sorted_horses[0]["score"] < RACE_LENGTH:
         print("All horses are disqualified...")
 
-    print(sorted_horses[:race_type])
+    print(f"The top {race_type} of the race is :")
+
+    for i in range(race_type):
+        print(f"Number {sorted_horses[0]["number"]}.")
