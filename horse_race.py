@@ -40,11 +40,22 @@ def is_valid_input():
 
     if _input.isdigit():
         result = [key for key, val in RACE_TYPE.items() if val == int(_input)]
-        result = result[0]
+        if len(result) == 1:
+            result = result[0]
+        else:
+            result = ""
     elif _input.lower() in RACE_TYPE:
         result = _input
 
     return result
+
+
+def display_results():
+    _sorted_horses = sorted(horses, key=lambda x: x["score"], reverse=True)
+    print(
+        f"Number {_sorted_horses[0]["number"]} is the current head of the race at {_sorted_horses[0]["score"]} meters !")
+    print(f"Number {_sorted_horses[1]["number"]} is second at {_sorted_horses[1]["score"]} meters.")
+    print(f"Number {_sorted_horses[2]["number"]} is third at {_sorted_horses[2]["score"]} meters.")
 
 
 HORSE_AMOUNT = 12
@@ -52,7 +63,7 @@ RACE_LENGTH = 2400
 TURN_LENGTH = 23
 RACE_TYPE = {"three":3, "four":4, "five":5}
 
-horses = [{"speed":0, "score":0, "dq":False} for _ in range(HORSE_AMOUNT)]
+horses = [{"number":x+1, "speed":0, "score":0, "dq":False} for x in range(HORSE_AMOUNT)]
 finished_horses = []
 
 velocity_list = [
@@ -77,8 +88,11 @@ if __name__ == "__main__":
 
     while len(finished_horses) < HORSE_AMOUNT:
         set_speed()
+        display_results()
 
         turn += 1
+
+        input(f"Turn [{turn}], press enter to continue...")
 
     sorted_horses = sorted(finished_horses, key = lambda x:x["score"], reverse = True)
 
