@@ -114,4 +114,4 @@ if __name__ == "__main__":
     print(f"The top {race_type} of the race is :")
 
     for i in range(race_type):
-        print(f"Number {sorted_horses[0]["number"]}.")
+        print(f"Number {sorted_horses[i]["number"]}.")
