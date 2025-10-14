@@ -32,6 +32,21 @@ def velocity_change(_nb, _horse):
     return new_vel
 
 
+def is_valid_input():
+    """ Checks if the input is in 'RACE_TYPE'. """
+
+    _input = input(f"Select a race type in the list:{list(RACE_TYPE.keys())} (in letters or numbers) : ")
+    result = ""
+
+    if _input.isdigit():
+        result = [key for key, val in RACE_TYPE.items() if val == int(_input)]
+        result = result[0]
+    elif _input.lower() in RACE_TYPE:
+        result = _input
+
+    return result
+
+
 HORSE_AMOUNT = 12
 RACE_LENGTH = 2400
 TURN_LENGTH = 23
@@ -52,6 +67,13 @@ velocity_list = [
 
 if __name__ == "__main__":
     turn = 0
+    race_type = is_valid_input()
+
+    while race_type not in RACE_TYPE:
+        race_type = is_valid_input()
+
+    if race_type.isalnum():
+        race_type = RACE_TYPE[race_type]
 
     while len(finished_horses) < HORSE_AMOUNT:
         set_speed()
@@ -59,7 +81,8 @@ if __name__ == "__main__":
         turn += 1
 
     sorted_horses = sorted(finished_horses, key = lambda x:x["score"], reverse = True)
-    print(sorted_horses[:3])
 
     if sorted_horses[0]["score"] < RACE_LENGTH:
         print("All horses are disqualified...")
+
+    print(sorted_horses[:race_type])
