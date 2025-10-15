@@ -51,29 +51,50 @@ def is_valid_input():
 
 
 def display_results():
-    """ Used to display the race turn by turn. """
+    """ Display the horses ranking. """
+
+    # [!] Sorting through all horses to find the first isn't optimal.
     _sorted_horses = sorted(horses, key=lambda x: x["score"], reverse=True)
     highest = _sorted_horses[0]["score"]
 
     for i in range(0, HORSE_AMOUNT):
+        # Display the numbers with spacing between single and double digits.
         print("[{:>2}] ".format(horses[i]["number"]), end='')
 
+        # Uniform spacing of each travalled distance based on the current head of the race.
         for n in range(highest):
+            # Display a character or empty space based on the travelled distance.
             if n <= horses[i]["score"]:
                 if horses[i]["score"] >= RACE_LENGTH:
                     print("\x1b[32m█\x1b[0m", end='') # Green.
                 else:
-                    print("\x1b[39m█\x1b[0m", end='') # Default.
+                    print("\x1b[39m█\x1b[0m", end='') # Default(white).
             else:
                 print(" ", end='')
 
+        # Distance travalled by each horse.
         print(" [{0}/{1}]".format(horses[i]["score"], RACE_LENGTH))
+
+
+def end_game():
+    """ Display end results. """
+
+    # Sort all horses in the list from first to last.
+    sorted_horses = sorted(finished_horses, key=lambda x: x["score"], reverse=True)
+
+    if sorted_horses[0]["score"] < RACE_LENGTH:
+        print("All horses are disqualified...")
+
+    print(f"The top {race_type} of the race is :")
+
+    for i in range(race_type):
+        print(f"Number {sorted_horses[i]["number"]}.")
 
 
 HORSE_AMOUNT = 12
 RACE_LENGTH = 240
 TURN_LENGTH = 2
-RACE_TYPE = {"three":3, "four":4, "five":5}
+RACE_TYPE = {"trifecta":3, "quartet":4, "quintet":5}
 
 horses = [{"number":x+1, "speed":0, "score":0, "dq":False} for x in range(HORSE_AMOUNT)]
 finished_horses = []
@@ -98,20 +119,12 @@ if __name__ == "__main__":
     if race_type.isalnum():
         race_type = RACE_TYPE[race_type]
 
-    while len(finished_horses) < HORSE_AMOUNT:
+    while len(finished_horses) < HORSE_AMOUNT: # Continue the race until all horses are finished.
         set_speed()
         display_results()
 
         turn += 1
 
         input(f"Turn [{turn}], press enter to continue...")
-
-    sorted_horses = sorted(finished_horses, key = lambda x:x["score"], reverse = True)
-
-    if sorted_horses[0]["score"] < RACE_LENGTH:
-        print("All horses are disqualified...")
-
-    print(f"The top {race_type} of the race is :")
-
-    for i in range(race_type):
-        print(f"Number {sorted_horses[i]["number"]}.")
+    else: # Game is finished, display end results.
+        end_game()
