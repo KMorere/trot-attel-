@@ -53,20 +53,22 @@ def is_valid_input():
 def display_results():
     """ Display the horses ranking. """
 
-    # [!] Sorting through all horses to find the first isn't optimal.
     _sorted_horses = sorted(horses, key=lambda x: x["score"], reverse=True)
     highest = _sorted_horses[0]["score"]
+    print()
 
     for i in range(0, HORSE_AMOUNT):
         # Display the numbers with spacing between single and double digits.
         print("[{:>2}] ".format(horses[i]["number"]), end='')
 
         # Uniform spacing of each travalled distance based on the current head of the race.
-        for n in range(highest):
+        for n in range(highest//TURN_LENGTH):
             # Display a character or empty space based on the travelled distance.
-            if n <= horses[i]["score"]:
+            if n <= horses[i]["score"]//TURN_LENGTH:
                 if horses[i]["score"] >= RACE_LENGTH:
                     print("\x1b[32m█\x1b[0m", end='') # Green.
+                elif horses[i]["dq"] == True:
+                    print("\x1b[31m█\x1b[0m", end='') # Red.
                 else:
                     print("\x1b[39m█\x1b[0m", end='') # Default(white).
             else:
@@ -92,8 +94,8 @@ def end_game():
 
 
 HORSE_AMOUNT = 12
-RACE_LENGTH = 240
-TURN_LENGTH = 2
+RACE_LENGTH = 2400
+TURN_LENGTH = 23
 RACE_TYPE = {"trifecta":3, "quartet":4, "quintet":5}
 
 horses = [{"number":x+1, "speed":0, "score":0, "dq":False} for x in range(HORSE_AMOUNT)]
